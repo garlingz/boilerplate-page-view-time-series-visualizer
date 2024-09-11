@@ -33,15 +33,26 @@ def draw_line_plot():
     return fig
 
 def draw_bar_plot():
+    fig, ax = plt.subplots(figsize=(8, 8))
     # Copy and modify data for monthly bar plot
-    df_bar = None
+    df_bar = df.copy()
+    df_bar['year'] = df_bar.index.year
+    df_bar['month'] = df_bar.index.month
+    monthly_avg = df_bar.groupby(['year', 'month'])['value'].transform('mean')
+    df_bar['monthly_avg'] = monthly_avg
 
     # Draw bar plot
+    sns.barplot(data= df_bar, x= df_bar['year'], y= 'monthly_avg', hue= df_bar['month'], palette= 'tab10')
 
+    month_names = ['January', 'February', 'March', 'April', 'May', 'June', 
+                   'July', 'August', 'September', 'October', 'November', 'December']
+    
+    handles, labels = ax.get_legend_handles_labels()  # Get current legend labels
+    ax.legend(handles=handles, labels=month_names, title='Months', loc='upper left')
 
-
-
-
+    ax.set_xlabel('Years')
+    plt.xticks(rotation= 90)
+    ax.set_ylabel('Average Page Views')
     # Save image and return fig (don't change this part)
     fig.savefig('bar_plot.png')
     return fig
