@@ -33,7 +33,6 @@ def draw_line_plot():
     return fig
 
 def draw_bar_plot():
-   def draw_bar_plot():
     fig, ax = plt.subplots(figsize=(8, 8))
     # Organizing information
     #   Copy and modify data for monthly bar plot
@@ -66,6 +65,7 @@ def draw_bar_plot():
     # Save image and return fig (don't change this part)
     fig.savefig('bar_plot.png')
     return fig
+
 def draw_box_plot():
     # Prepare data for box plots (this part is done!)
     df_box = df.copy()
