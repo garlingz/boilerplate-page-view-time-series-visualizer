@@ -47,12 +47,8 @@ def draw_bar_plot():
 
     df_bar = df_bar.groupby(['year', 'month'])['value'].mean().unstack()
 
-
     # Draw bar plot
     df_bar.plot(kind= 'bar', ax=ax)
-
-
-    
 
     # Configure axis labels and ticks
     ax.legend(title= 'Months', labels= month_names, loc= 'upper left')
@@ -87,13 +83,13 @@ def draw_box_plot():
     fig, axes = plt.subplots(1, 2, figsize= (14, 6))
     palette = sns.color_palette('husl', 12)
     # First boxplot
-    sns.boxplot(df_box, x= 'year', y= 'value', palette= 'tab10', ax= axes[0], flierprops=dict(marker='.', markersize= 2))
+    sns.boxplot(data= df_box, x= 'year', y= 'value', palette= 'tab10', ax= axes[0], flierprops=dict(marker='.', markersize= 2))
     axes[0].set_title('Year-wise Box Plot (Trend)')
     axes[0].set_xlabel('Year')
     axes[0].set_ylabel('Page Views')
 
     # Second boxplot
-    sns.boxplot(df_box, x= 'month', y= 'value', ax= axes[1], flierprops=dict(marker='.', markersize= 2), palette= palette, legend= False)
+    sns.boxplot(data= df_box, x= 'month', y= 'value', ax= axes[1], flierprops=dict(marker='.', markersize= 2), palette= palette, legend= False)
     axes[1].set_title('Month-wise Box Plot (Seasonality)')
     axes[1].set_xlabel('Month')
     axes[1].set_ylabel('Page Views')
