@@ -38,11 +38,12 @@ def draw_bar_plot():
     df_bar = df.copy()
     df_bar['year'] = df_bar.index.year
     df_bar['month'] = df_bar.index.month
-    monthly_avg = df_bar.groupby(['year', 'month'])['value'].transform('mean')
-    df_bar['monthly_avg'] = monthly_avg
 
+#    monthly_avg = df_bar.groupby(['year', 'month'])['value'].transform('mean')
+#   df_bar['monthly_avg'] = monthly_avg
+    df_bar = df_bar.groupby(['year', 'month'])['value'].mean().reset_index()
     # Draw bar plot
-    sns.barplot(data= df_bar, x= df_bar['year'], y= 'monthly_avg', hue= df_bar['month'], palette= 'tab10')
+    sns.barplot(data= df_bar, x= 'year', y= 'value', hue= 'month', palette= 'tab10', ax=ax)
 
     month_names = ['January', 'February', 'March', 'April', 'May', 'June', 
                    'July', 'August', 'September', 'October', 'November', 'December']
@@ -53,6 +54,11 @@ def draw_bar_plot():
     ax.set_xlabel('Years')
     plt.xticks(rotation= 90)
     ax.set_ylabel('Average Page Views')
+
+# plot legend = "Months"
+# x_label = 'Years'
+# y_label = 'Average Page Views'
+
     # Save image and return fig (don't change this part)
     fig.savefig('bar_plot.png')
     return fig
@@ -64,11 +70,30 @@ def draw_box_plot():
     df_box['year'] = [d.year for d in df_box.date]
     df_box['month'] = [d.strftime('%b') for d in df_box.date]
 
-    # Draw box plots (using Seaborn)
+    # Changing data type to float for value, and categorical for months
+    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    df_box['value'] = df_box['value'].astype(float)
+    df_box['month'] = pd.Categorical(df_box['month'], categories= months, ordered= True)
 
+    # Creating the Years/Months
+    years = sorted(df_box['year'].unique())
+    year_data = [df_box[df_box['year'] == year]['value'] for year in years]
+    month_data = [df_box[df_box['month'] == month]['value'] for month in months]
 
+    # Figure setup
+    fig, axes = plt.subplots(1, 2, figsize= (14, 6))
+    palette = sns.color_palette('husl', 12)
+    # First boxplot
+    sns.boxplot(df_box, x= 'year', y= 'value', palette= 'tab10', ax= axes[0], flierprops=dict(marker='.', markersize= 2))
+    axes[0].set_title('Year-wise Box Plot (Trend)')
+    axes[0].set_xlabel('Year')
+    axes[0].set_ylabel('Page Views')
 
-
+    # Second boxplot
+    sns.boxplot(df_box, x= 'month', y= 'value', ax= axes[1], flierprops=dict(marker='.', markersize= 2), palette= palette, legend= False)
+    axes[1].set_title('Month-wise Box Plot (Seasonality)')
+    axes[1].set_xlabel('Month')
+    axes[1].set_ylabel('Page Views')
 
     # Save image and return fig (don't change this part)
     fig.savefig('box_plot.png')
