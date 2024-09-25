@@ -33,36 +33,39 @@ def draw_line_plot():
     return fig
 
 def draw_bar_plot():
+   def draw_bar_plot():
     fig, ax = plt.subplots(figsize=(8, 8))
-    # Copy and modify data for monthly bar plot
+    # Organizing information
+    #   Copy and modify data for monthly bar plot
     df_bar = df.copy()
     df_bar['year'] = df_bar.index.year
     df_bar['month'] = df_bar.index.month
 
-#    monthly_avg = df_bar.groupby(['year', 'month'])['value'].transform('mean')
-#   df_bar['monthly_avg'] = monthly_avg
-    df_bar = df_bar.groupby(['year', 'month'])['value'].mean().reset_index()
-    # Draw bar plot
-    sns.barplot(data= df_bar, x= 'year', y= 'value', hue= 'month', palette= 'tab10', ax=ax)
-
+    #   Defining months/years
     month_names = ['January', 'February', 'March', 'April', 'May', 'June', 
                    'July', 'August', 'September', 'October', 'November', 'December']
+    unique_years = df_bar['year'].unique()
+
+    df_bar = df_bar.groupby(['year', 'month'])['value'].mean().unstack()
+
+
+    # Draw bar plot
+    df_bar.plot(kind= 'bar', ax=ax)
+
+
     
-    handles, labels = ax.get_legend_handles_labels()  # Get current legend labels
-    ax.legend(handles=handles, labels=month_names, title='Months', loc='upper left')
 
+    # Configure axis labels and ticks
+    ax.legend(title= 'Months', labels= month_names, loc= 'upper left')
     ax.set_xlabel('Years')
-    plt.xticks(rotation= 90)
     ax.set_ylabel('Average Page Views')
+    ax.set_xticks(range(len(df_bar.index)))
+    ax.set_xticklabels(unique_years, rotation=90)
 
-# plot legend = "Months"
-# x_label = 'Years'
-# y_label = 'Average Page Views'
 
     # Save image and return fig (don't change this part)
     fig.savefig('bar_plot.png')
     return fig
-
 def draw_box_plot():
     # Prepare data for box plots (this part is done!)
     df_box = df.copy()
